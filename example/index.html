@@ -1,0 +1,58 @@
+<!-- // @author: Brian Wojtczak -->
+<!-- // @copyright: 2024 by Brian Wojtczak -->
+<!-- // @license: BSD-style license found in the LICENSE file -->
+
+<html>
+<head>
+    <title>ALTCHA Example</title>
+
+    <style>
+        .exlabel {
+            display: inline-block;
+            width: 20%;
+            text-align: right;
+            vertical-align: top;
+            margin: 0 10px 5px;
+        }
+
+        .extext {
+            width: 60%;
+        }
+    </style>
+
+    <script async defer src="altcha.js.min" type="module"></script>
+
+</head>
+<body>
+<h1>Example</h1>
+
+<div style="margin: 3em;">
+
+    <form method="post" action="/validate">
+
+        <label for="name" class="exlabel">Name</label>
+        <input type="text" id="name" name="name">
+        <br>
+        <label for="message" class="exlabel">Message</label>
+        <textarea id="message" name="message" rows="5" class="extext"></textarea>
+        <br>
+        <br>
+
+        <altcha-widget challengeurl="/challenge"></altcha-widget>
+
+        <br>
+        <input type="submit" value="Submit">
+
+    </form>
+
+</div>
+
+<br>
+
+<ul>
+    <li><a href="https://github.com/k42-software/go-altcha">github.com/k42-software/go-altcha</a></li>
+    <li><a href="https://altcha.org/">altcha.org</a></li>
+</ul>
+
+</body>
+</html>
