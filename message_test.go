@@ -63,7 +63,7 @@ func TestMessageIsValidResponse(t *testing.T) {
 		Salt:      "0V5xzYiSFmY1swbb",
 		Number:    49500,
 		Challenge: "69df4e03d8fffc1d66aeba60384ad28d70caed4bcf10c69f80e0a16666eae6a7",
-		Signature: "fa0cad0fa7b4aa33d9927b9dd3690eceaf0aaac6b27d77c62357b165716323a9",
+		Signature: "-gytD6e0qjPZknud02kOzq8KqsayfXfGI1exZXFjI6k",
 	}
 	if !validMsg.IsValidResponse() {
 		t.Error("Expected valid response to be true, got false")

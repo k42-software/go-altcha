@@ -31,17 +31,17 @@ func TestSign(t *testing.T) {
 		{
 			SHA256.String(),
 			args{SHA256, exampleText},
-			"687b7d0bf0b61d2534061f5b352427a6654a3d19997b9042f486fabed8a5e0b8",
+			"aHt9C_C2HSU0Bh9bNSQnpmVKPRmZe5BC9Ib6vtil4Lg",
 		},
 		{
 			SHA384.String(),
 			args{SHA384, exampleText},
-			"122b2be34a47d9b485070964d2f3211e07995e546eb0c5bc4768c8f6a7c4746b42eb73dd84576f9871d49d8acd763348",
+			"Eisr40pH2bSFBwlk0vMhHgeZXlRusMW8R2jI9qfEdGtC63PdhFdvmHHUnYrNdjNI",
 		},
 		{
 			SHA512.String(),
 			args{SHA512, exampleText},
-			"1ef9aadfcdbc66bdc02019d407a082e74c55074c8d537f2caeb400a0963484b5d8c10772eaae7a0616d3537e9676666efb13b67872a00b60dec7446cfa1421e5",
+			"Hvmq3828Zr3AIBnUB6CC50xVB0yNU38srrQAoJY0hLXYwQdy6q56BhbTU36WdmZu-xO2eHKgC2Dex0Rs-hQh5Q",
 		},
 	}
 	for _, tt := range tests {
@@ -78,7 +78,7 @@ func TestVerifySignature(t *testing.T) {
 			args{
 				SHA256,
 				exampleText,
-				"687b7d0bf0b61d2534061f5b352427a6654a3d19997b9042f486fabed8a5e0b8",
+				"aHt9C_C2HSU0Bh9bNSQnpmVKPRmZe5BC9Ib6vtil4Lg",
 			},
 			true,
 		},
@@ -96,7 +96,7 @@ func TestVerifySignature(t *testing.T) {
 			args{
 				SHA384,
 				exampleText,
-				"122b2be34a47d9b485070964d2f3211e07995e546eb0c5bc4768c8f6a7c4746b42eb73dd84576f9871d49d8acd763348",
+				"Eisr40pH2bSFBwlk0vMhHgeZXlRusMW8R2jI9qfEdGtC63PdhFdvmHHUnYrNdjNI",
 			},
 			true,
 		},
@@ -114,7 +114,7 @@ func TestVerifySignature(t *testing.T) {
 			args{
 				SHA512,
 				exampleText,
-				"1ef9aadfcdbc66bdc02019d407a082e74c55074c8d537f2caeb400a0963484b5d8c10772eaae7a0616d3537e9676666efb13b67872a00b60dec7446cfa1421e5",
+				"Hvmq3828Zr3AIBnUB6CC50xVB0yNU38srrQAoJY0hLXYwQdy6q56BhbTU36WdmZu-xO2eHKgC2Dex0Rs-hQh5Q",
 			},
 			true,
 		},

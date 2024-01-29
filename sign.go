@@ -6,7 +6,7 @@ package altcha
 
 import (
 	"crypto/hmac"
-	"encoding/hex"
+	"encoding/base64"
 	"hash"
 )
 
@@ -26,11 +26,19 @@ func sign(algo Algorithm, text, secret string) string {
 	}
 	signer := hmac.New(newHasher, []byte(secret))
 	signer.Write([]byte(text))
-	return hex.EncodeToString(signer.Sum(nil))
+
+	// The official server implementation example uses hex encoding.
+	// However, as the client doesn't read the signature, this can be changed
+	// without affecting compatibility.
+	// This implementation uses base64 encoding produces shorter signatures.
+	return base64.RawURLEncoding.EncodeToString(signer.Sum(nil))
 }
 
 // VerifySignature checks if the given signature is valid for the given text.
 func VerifySignature(algo Algorithm, text string, signature string) (valid bool) {
+	if len(signature) == 0 {
+		return false
+	}
 	current, previous := GetSecrets()
 	return signature == sign(algo, text, current) || signature == sign(algo, text, previous)
 }
