@@ -1,6 +1,6 @@
-// @author: Brian Wojtczak
-// @copyright: 2024 by Brian Wojtczak
-// @license: BSD-style license found in the LICENSE file
+//  @author: Brian Wojtczak
+//  @copyright: 2024 by Brian Wojtczak
+//  @license: BSD-style license found in the LICENSE file
 
 package altcha
 
