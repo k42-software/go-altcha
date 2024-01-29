@@ -6,19 +6,44 @@ This is an implementation of the server side in Go.
 
 ## Usage
 
+The simplest way to use this code is as a HTTP handler middleware.
+
+```go
+package main
+
+import (
+	"github.com/k42-software/go-altcha/http" // altcha
+	"net/http"
+)
+
+func main() {
+	fileServer := http.FileServer(http.Dir("."))
+	http.HandleFunc("/altcha.min.js", altcha.ServeJavascript)
+	http.Handle("/protected.html", altcha.ProtectForm(fileServer))
+	http.Handle("/", fileServer)
+	_ = http.ListenAndServe(":3003", http.DefaultServeMux)
+}
+```
+
+See the example directory for a more detailed working example.
+
+Alternatively, you can call the ALTCHA library functions directly.
+
 ```go
 package main
 
 import "github.com/k42-software/go-altcha"
 
-// Step 1: Generate a challenge
+// Generate a challenge
 challenge := altcha.NewChallenge()
 
-// Step 2: Send the challenge to the client
+// Generate a response
+response, ok := altcha.SolveChallenge(challenge, altcha.DefaultComplexity)
+if !ok {
+    panic("failed to solve challenge")
+}
 
-// Step 3: Receive the response from the client
-
-// Step 4: Validate the response
+// Validate the response
 valid := altcha.ValidateResponse(response)
 
 if valid {
@@ -27,8 +52,6 @@ if valid {
     // Failure
 }
 ```
-
-See the example directory for a working basic example.
 
 ## License
 

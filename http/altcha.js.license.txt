@@ -1,7 +1,7 @@
 These javascript files are subject to the following license.
 
 They were obtained from:
-https://github.com/altcha-org/altcha
+https://github.com/altcha-org/altcha/tree/0.1.5/dist
 
 -----------------------------------------------------------------------
 

@@ -2,10 +2,10 @@
 <!-- // @copyright: 2024 by Brian Wojtczak -->
 <!-- // @license: BSD-style license found in the LICENSE file -->
 
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <title>ALTCHA Example</title>
-
     <style>
         .exlabel {
             display: inline-block;
@@ -14,21 +14,17 @@
             vertical-align: top;
             margin: 0 10px 5px;
         }
-
         .extext {
             width: 60%;
         }
     </style>
-
-    <script async defer src="altcha.js.min" type="module"></script>
-
+    <script async defer src="altcha.min.js" type="module"></script>
 </head>
 <body>
-<h1>Example</h1>
-
+<h1>ALTCHA Example</h1>
 <div style="margin: 3em;">
 
-    <form method="post" action="/validate">
+    <form method="post" action="/protected.html">
 
         <label for="name" class="exlabel">Name</label>
         <input type="text" id="name" name="name">
@@ -38,7 +34,7 @@
         <br>
         <br>
 
-        <altcha-widget challengeurl="/challenge"></altcha-widget>
+        <altcha-widget challengeurl="/protected.html"></altcha-widget>
 
         <br>
         <input type="submit" value="Submit">
@@ -46,13 +42,10 @@
     </form>
 
 </div>
-
 <br>
-
 <ul>
     <li><a href="https://github.com/k42-software/go-altcha">github.com/k42-software/go-altcha</a></li>
     <li><a href="https://altcha.org/">altcha.org</a></li>
 </ul>
-
 </body>
 </html>
