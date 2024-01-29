@@ -7,7 +7,6 @@ package altcha
 import (
 	"encoding/base64"
 	"encoding/json"
-	"github.com/pkg/errors"
 )
 
 // Message represents the messages between the client and server.
@@ -32,7 +31,8 @@ type Message struct {
 	Signature string `json:"signature"`
 }
 
-// Encode returns the message ready to be sent to the client.
+// Encode returns the message ready to be sent to the client. The client is
+// expecting the message in raw JSON format.
 func (message Message) Encode() string {
 	// It seems strange that we don't need to base64 encode the jsonBytes here,
 	// but the client expects the JSON without the additional encoding.
@@ -64,4 +64,45 @@ func (message Message) IsValidResponse() bool {
 	}
 
 	return VerifySignature(algo, message.Challenge, message.Signature)
+}
+
+// Solve attempts to solve the challenge within the given maximum complexity.
+func (message Message) Solve(maximumComplexity int) (number int, ok bool) {
+	if maximumComplexity <= 0 {
+		maximumComplexity = DefaultComplexity * 2
+	}
+
+	algo, ok := AlgorithmFromString(message.Algorithm)
+	if !ok {
+		return -1, false
+	}
+
+	for i := 1; i <= maximumComplexity; i++ {
+		if message.Challenge == generateHash(algo, message.Salt, i) {
+			return i, true
+		}
+	}
+
+	return -1, false
+}
+
+// SolveChallenge is a convenience function which decodes the challenge, solves
+// it, and returns the response.
+func SolveChallenge(challenge string, maximumComplexity int) (response string, ok bool) {
+
+	// Decode the challenge from NewChallenge()
+	msg, err := DecodeChallenge(challenge)
+	if err != nil {
+		return response, false
+	}
+
+	// SolveChallenge the challenge
+	msg.Number, ok = msg.Solve(maximumComplexity)
+
+	if ok {
+		// Encode the response
+		response = msg.EncodeWithBase64()
+	}
+
+	return response, ok
 }

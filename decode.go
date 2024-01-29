@@ -10,8 +10,14 @@ import (
 	"github.com/pkg/errors"
 )
 
-// DecodeMessage decodes the response message from the client.
-func DecodeMessage(encoded string) (msg Message, err error) {
+// DecodeChallenge decodes output from NewChallenge.
+func DecodeChallenge(encoded string) (msg Message, err error) {
+	err = json.Unmarshal([]byte(encoded), &msg)
+	return msg, errors.Wrap(err, "invalid message")
+}
+
+// DecodeResponse decodes the response message from the client.
+func DecodeResponse(encoded string) (msg Message, err error) {
 	var jsonBytes []byte
 	jsonBytes, err = base64.StdEncoding.DecodeString(encoded)
 	if err != nil {

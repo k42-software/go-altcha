@@ -54,3 +54,80 @@ func TestMessageIsValidResponse(t *testing.T) {
 		t.Error("Expected response with invalid signature to be false, got true")
 	}
 }
+
+func TestMessageSolve(t *testing.T) {
+	tests := []struct {
+		name              string
+		message           Message
+		maximumComplexity int
+		wantNumber        int
+		wantOk            bool
+	}{
+		{
+			name: "ValidChallenge",
+			message: Message{
+				Algorithm: "SHA-256",
+				Salt:      "0V5xzYiSFmY1swbb",
+				Challenge: "69df4e03d8fffc1d66aeba60384ad28d70caed4bcf10c69f80e0a16666eae6a7",
+			},
+			maximumComplexity: DefaultComplexity,
+			wantNumber:        49500,
+			wantOk:            true,
+		},
+		{
+			name: "UnsolvableChallenge",
+			message: Message{
+				Algorithm: "SHA-256",
+				Salt:      "0V5xzYiSFmY1swbb",
+				Challenge: "unsolvableChallengeHash",
+			},
+			maximumComplexity: DefaultComplexity,
+			wantNumber:        -1,
+			wantOk:            false,
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			gotNumber, gotOk := tc.message.Solve(tc.maximumComplexity)
+			if gotNumber != tc.wantNumber || gotOk != tc.wantOk {
+				t.Errorf("Message.Solve() = (%v, %v), want (%v, %v)", gotNumber, gotOk, tc.wantNumber, tc.wantOk)
+			}
+		})
+	}
+}
+
+func TestSolveChallenge(t *testing.T) {
+	tests := []struct {
+		name              string
+		challenge         string
+		maximumComplexity int
+		wantResponse      string
+		wantOk            bool
+	}{
+		{
+			name:              "ValidChallenge",
+			challenge:         `{"algorithm":"SHA-256","salt":"0V5xzYiSFmY1swbb","challenge":"69df4e03d8fffc1d66aeba60384ad28d70caed4bcf10c69f80e0a16666eae6a7"}`,
+			maximumComplexity: DefaultComplexity,
+			wantResponse:      `eyJhbGdvcml0aG0iOiJTSEEtMjU2Iiwic2FsdCI6IjBWNXh6WWlTRm1ZMXN3YmIiLCJudW1iZXIiOjQ5NTAwLCJjaGFsbGVuZ2UiOiI2OWRmNGUwM2Q4ZmZmYzFkNjZhZWJhNjAzODRhZDI4ZDcwY2FlZDRiY2YxMGM2OWY4MGUwYTE2NjY2ZWFlNmE3Iiwic2lnbmF0dXJlIjoiIn0=`,
+			wantOk:            true,
+		},
+		{
+			name:              "InvalidChallenge",
+			challenge:         "invalidEncodedChallenge",
+			maximumComplexity: DefaultComplexity,
+			wantResponse:      "",
+			wantOk:            false,
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			gotResponse, gotOk := SolveChallenge(tc.challenge, tc.maximumComplexity)
+			if gotOk != tc.wantOk || (tc.wantOk && gotResponse != tc.wantResponse) {
+				t.Logf("SolveChallenge(%v, %v)", tc.challenge, tc.maximumComplexity)
+				t.Logf("got: (%v, %v)", gotResponse, gotOk)
+				t.Logf("want: (%v, %v)", tc.wantResponse, tc.wantOk)
+				t.Errorf("SolveChallenge did not return expected result")
+			}
+		})
+	}
+}

@@ -6,7 +6,7 @@ package altcha
 
 // ValidateResponse decodes and validates the response from the client.
 func ValidateResponse(encoded string) bool {
-	msg, err := DecodeMessage(encoded)
+	msg, err := DecodeResponse(encoded)
 	if err != nil {
 		return false
 	}
