@@ -41,20 +41,11 @@ func (message Message) Encode() string {
 	return string(jsonBytes)
 }
 
+// EncodeWithBase64 returns the message ready to be sent back to the server.
+// The server is expecting the message to be JSON wrapped in base64 encoding.
 func (message Message) EncodeWithBase64() string {
 	jsonBytes, _ := json.Marshal(message)
 	return base64.StdEncoding.EncodeToString(jsonBytes)
-}
-
-// DecodeMessage decodes the message from the client.
-func DecodeMessage(encoded string) (msg Message, err error) {
-	var jsonBytes []byte
-	jsonBytes, err = base64.StdEncoding.DecodeString(encoded)
-	if err != nil {
-		return msg, errors.Wrap(err, "invalid base64 encoding")
-	}
-	err = json.Unmarshal(jsonBytes, &msg)
-	return msg, errors.Wrap(err, "invalid message")
 }
 
 // IsValidResponse is used to validate a decoded response from the client.
