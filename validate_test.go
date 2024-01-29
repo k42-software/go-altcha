@@ -9,16 +9,25 @@ import (
 )
 
 func TestValidateChallenge(t *testing.T) {
+
+	// Override randomString for deterministic behavior
+	randomString = func(length int) string {
+		const fakeRandomString = "0V5xzYiSFmY1swbbkwIoAgbWaiw7yJvZ"
+		return fakeRandomString
+	}
+	// Rotate secrets twice so that the fake randomness is used for both secrets
+	RotateSecrets()
+	RotateSecrets()
+
 	// Test with a valid encoded message
 	validMsg := Message{
 		Algorithm: "SHA-256",
 		Salt:      "0V5xzYiSFmY1swbb",
 		Number:    49500,
 		Challenge: "69df4e03d8fffc1d66aeba60384ad28d70caed4bcf10c69f80e0a16666eae6a7",
-		Signature: "fa0cad0fa7b4aa33d9927b9dd3690eceaf0aaac6b27d77c62357b165716323a9",
+		Signature: "-gytD6e0qjPZknud02kOzq8KqsayfXfGI1exZXFjI6k",
 	}
-	validEncodedMsg := validMsg.EncodeWithBase64()
-	if ValidateResponse(validEncodedMsg) {
+	if !ValidateResponse(validMsg.EncodeWithBase64()) {
 		t.Error("Expected valid encoded message to return true, got false")
 	}
 
@@ -29,10 +38,19 @@ func TestValidateChallenge(t *testing.T) {
 	}
 
 	// Test with a message which has valid encoding but invalid values
-	invalidMsg := validMsg
-	invalidMsg.Signature = "incorrect_signature" // Invalidate the message
-	invalidEncodedMsg := invalidMsg.EncodeWithBase64()
-	if ValidateResponse(invalidEncodedMsg) {
-		t.Error("Expected valid encoded but invalid message to return false, got true")
+
+	// Test with an invalid challenge
+	invalidChallengeMsg := validMsg
+	invalidChallengeMsg.Challenge = "incorrect_challenge"
+	if ValidateResponse(invalidChallengeMsg.EncodeWithBase64()) {
+		t.Error("Expected message with invalid challenge to be false, got true")
 	}
+
+	// Test with invalid signature
+	invalidSignatureMsg := validMsg
+	invalidSignatureMsg.Signature = "incorrect_signature"
+	if ValidateResponse(invalidSignatureMsg.EncodeWithBase64()) {
+		t.Error("Expected message with invalid signature to be false, got true")
+	}
+
 }

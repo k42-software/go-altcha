@@ -39,6 +39,20 @@ func VerifySignature(algo Algorithm, text string, signature string) (valid bool)
 	if len(signature) == 0 {
 		return false
 	}
+
 	current, previous := GetSecrets()
-	return signature == sign(algo, text, current) || signature == sign(algo, text, previous)
+
+	// Check using the current secret
+	validSignature := sign(algo, text, current)
+	if signature == validSignature {
+		return true
+	}
+
+	// Check using the previous secret
+	validSignature = sign(algo, text, previous)
+	if signature == validSignature {
+		return true
+	}
+
+	return false
 }
