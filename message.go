@@ -7,7 +7,12 @@ package altcha
 import (
 	"encoding/base64"
 	"encoding/json"
+	"strconv"
+	"strings"
 )
+
+// TextPrefix is the prefix used for the text encoding of the message.
+const TextPrefix = "Altcha "
 
 // Message represents the messages between the client and server.
 type Message struct {
@@ -46,6 +51,34 @@ func (message Message) Encode() string {
 func (message Message) EncodeWithBase64() string {
 	jsonBytes, _ := json.Marshal(message)
 	return base64.StdEncoding.EncodeToString(jsonBytes)
+}
+
+// String returns a textual representation of the message in the format defined
+// in the M2M Altcha specification. It is used for both server and client.
+// @see https://altcha.org/docs/m2m-altcha
+func (message Message) String() string {
+
+	sb := &strings.Builder{}
+	sb.WriteString(TextPrefix)
+
+	sb.WriteString("algorithm=")
+	sb.WriteString(message.Algorithm)
+
+	if message.Number > 0 {
+		sb.WriteString(", number=")
+		sb.WriteString(strconv.Itoa(message.Number))
+	}
+
+	sb.WriteString(", salt=")
+	sb.WriteString(message.Salt) // Must not contain whitespace or commas
+
+	sb.WriteString(", challenge=")
+	sb.WriteString(message.Challenge) // hex encoded
+
+	sb.WriteString(", signature=")
+	sb.WriteString(message.Signature) // base64 encoded
+
+	return sb.String()
 }
 
 // IsValidResponse is used to validate a decoded response from the client.
@@ -90,7 +123,7 @@ func (message Message) Solve(maximumComplexity int) (number int, ok bool) {
 // it, and returns the response.
 func SolveChallenge(challenge string, maximumComplexity int) (response string, ok bool) {
 
-	// Decode the challenge from NewChallenge()
+	// Decode the challenge from NewChallengeEncoded()
 	msg, err := DecodeChallenge(challenge)
 	if err != nil {
 		return response, false

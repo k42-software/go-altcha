@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-func TestNewChallenge(t *testing.T) {
+func TestNewChallengeEncoded(t *testing.T) {
 
 	// Override randomInt and randomString for deterministic behavior
 	randomInt = func(minimum, maximum int) int {
@@ -23,10 +23,10 @@ func TestNewChallenge(t *testing.T) {
 
 	const want = `{"algorithm":"SHA-256","salt":"0V5xzYiSFmY1swbb","challenge":"69df4e03d8fffc1d66aeba60384ad28d70caed4bcf10c69f80e0a16666eae6a7","signature":"-gytD6e0qjPZknud02kOzq8KqsayfXfGI1exZXFjI6k"}`
 
-	got := NewChallenge()
+	got := NewChallengeEncoded()
 
 	if got != want {
-		t.Errorf("NewChallenge() = %v, want %v", got, want)
+		t.Errorf("NewChallengeEncoded() = %v, want %v", got, want)
 	}
 }
 
@@ -83,7 +83,9 @@ func TestNewChallengeWithParams(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewChallengeWithParams(tt.args.params); got != tt.want {
+			msg := NewChallengeWithParams(tt.args.params)
+			got := msg.Encode()
+			if got != tt.want {
 				t.Errorf("NewChallengeWithParams() = %v, want %v", got, tt.want)
 			}
 		})

@@ -6,6 +6,7 @@ package altcha
 
 import (
 	"encoding/base64"
+	"reflect"
 	"testing"
 )
 
@@ -82,6 +83,43 @@ func TestDecodeResponse(t *testing.T) {
 	}
 	if msg.Signature != expectedSignature {
 		t.Errorf("Expected Signature to be %s, got %s", expectedSignature, msg.Signature)
+	}
+
+}
+
+func TestDecodeText(t *testing.T) {
+	originalMsg := Message{
+		Algorithm: "SHA-256",
+		Salt:      "0V5xzYiSFmY1swbb",
+		Number:    49500,
+		Challenge: "69df4e03d8fffc1d66aeba60384ad28d70caed4bcf10c69f80e0a16666eae6a7",
+		Signature: "-gytD6e0qjPZknud02kOzq8KqsayfXfGI1exZXFjI6k",
+	}
+	expectedText := `Altcha algorithm=SHA-256, number=49500, salt=0V5xzYiSFmY1swbb, challenge=69df4e03d8fffc1d66aeba60384ad28d70caed4bcf10c69f80e0a16666eae6a7, signature=-gytD6e0qjPZknud02kOzq8KqsayfXfGI1exZXFjI6k`
+
+	actualText := originalMsg.String()
+	if actualText != expectedText {
+		t.Errorf("Expected encoded string to be %s, got %s", expectedText, actualText)
+	}
+
+	decodedMsg, err := DecodeText(actualText)
+	if err != nil {
+		t.Errorf("DecodeText failed: %v", err)
+	}
+	if !reflect.DeepEqual(originalMsg, decodedMsg) {
+		t.Errorf("Decoded message does not match original. Original: %+v, Decoded: %+v", originalMsg, decodedMsg)
+	}
+
+	// Test case for invalid text encoding
+	invalidText := "invalid-text"
+	if _, err := DecodeText(invalidText); err == nil {
+		t.Error("Expected error for invalid text, got nil")
+	}
+
+	// Test case for a partially invalid message
+	invalidText = `Altcha algorithm=SHA-256, number=49500, invalid=true`
+	if _, err := DecodeText(invalidText); err == nil {
+		t.Error("Expected error for invalid text, got nil")
 	}
 
 }

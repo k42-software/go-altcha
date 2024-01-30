@@ -9,6 +9,24 @@ import (
 	"testing"
 )
 
+func TestMessageString(t *testing.T) {
+
+	originalMsg := Message{
+		Algorithm: "SHA-256",
+		Salt:      "0V5xzYiSFmY1swbb",
+		Number:    49500,
+		Challenge: "69df4e03d8fffc1d66aeba60384ad28d70caed4bcf10c69f80e0a16666eae6a7",
+		Signature: "-gytD6e0qjPZknud02kOzq8KqsayfXfGI1exZXFjI6k",
+	}
+	expectedText := `Altcha algorithm=SHA-256, number=49500, salt=0V5xzYiSFmY1swbb, challenge=69df4e03d8fffc1d66aeba60384ad28d70caed4bcf10c69f80e0a16666eae6a7, signature=-gytD6e0qjPZknud02kOzq8KqsayfXfGI1exZXFjI6k`
+
+	actualText := originalMsg.String()
+	if actualText != expectedText {
+		t.Errorf("Expected encoded string to be %s, got %s", expectedText, actualText)
+	}
+
+}
+
 func TestMessageIsValidResponse(t *testing.T) {
 
 	randomInt = rand.Int       // Reset randomInt to use the real function
