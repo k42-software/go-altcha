@@ -12,10 +12,11 @@ import (
 const defaultSecretsRotationInterval = 5 * time.Minute
 
 var (
-	currentSecret         string
-	previousSecret        string
-	secretsRotationTicker *time.Ticker
-	secretsMutex          = &sync.RWMutex{}
+	currentSecret            string
+	previousSecret           string
+	secretsRotationCallbacks []func()
+	secretsRotationTicker    *time.Ticker
+	secretsMutex             = &sync.RWMutex{}
 )
 
 // GetSecrets returns the current and previous secrets used for the hmac.
@@ -43,6 +44,13 @@ func RotateSecrets() {
 func rotateSecrets() {
 	previousSecret = currentSecret
 	currentSecret = randomString(32)
+
+	callbacks := secretsRotationCallbacks // copy the slice
+	go func() {
+		for _, callback := range callbacks {
+			callback()
+		}
+	}()
 }
 
 // SetSecretsRotationInterval sets the interval at which secrets are automatically
@@ -66,4 +74,10 @@ func SetSecretsRotationInterval(interval time.Duration) {
 			}
 		}()
 	}
+}
+
+func AddSecretsRotationCallback(callback func()) {
+	secretsMutex.Lock()
+	defer secretsMutex.Unlock()
+	secretsRotationCallbacks = append(secretsRotationCallbacks, callback)
 }

@@ -30,7 +30,7 @@ func Protect(w http.ResponseWriter, challenge string) (ok bool) {
 	}
 
 	// Validate the response
-	if !altcha.ValidateResponse(challenge) {
+	if !altcha.ValidateResponse(challenge, true) {
 		http.Error(w, "Invalid altcha response", http.StatusForbidden)
 		return false
 	}

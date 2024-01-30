@@ -44,7 +44,7 @@ if !ok {
 }
 
 // Validate the response
-valid := altcha.ValidateResponse(response)
+valid := altcha.ValidateResponse(response, true)
 
 if valid {
     // Success
