@@ -17,7 +17,7 @@ var files embed.FS
 
 var fileServer = http.FileServer(http.FS(files))
 
-// Simple middleware to browser disable caching
+// Simple middleware to disable browser caching
 func noCache(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Cache-Control", "private, no-cache, no-store, must-revalidate")
