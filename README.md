@@ -56,7 +56,7 @@ package main
 import "github.com/k42-software/go-altcha"
 
 // Generate a challenge
-challenge := altcha.NewChallenge()
+challenge := altcha.NewChallengeEncoded()
 
 // Generate a response
 response, ok := altcha.SolveChallenge(challenge, altcha.DefaultComplexity)
@@ -64,7 +64,7 @@ if !ok {
     panic("failed to solve challenge")
 }
 
-// Validate the response
+// Validate the response (true for replay prevention)
 valid := altcha.ValidateResponse(response, true)
 
 if valid {
