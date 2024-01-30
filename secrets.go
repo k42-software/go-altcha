@@ -76,6 +76,9 @@ func SetSecretsRotationInterval(interval time.Duration) {
 	}
 }
 
+// AddSecretsRotationCallback adds a callback function which is called when the
+// secrets are rotated. It is run in a separate goroutine, so that the mutex
+// is not held or locked when the callback is run.
 func AddSecretsRotationCallback(callback func()) {
 	secretsMutex.Lock()
 	defer secretsMutex.Unlock()
