@@ -50,8 +50,10 @@ func IsSignatureBanned(signature string) bool {
 	defer bannedMutex.RUnlock()
 
 	for _, list := range bannedSignatures {
-		if sort.SearchStrings(list, signature) < len(list) {
-			return true
+		for _, entry := range list {
+			if entry == signature {
+				return true
+			}
 		}
 	}
 
